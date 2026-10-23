@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edu-Step Admin Portali | Boshqaruv Paneli</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #080614;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .admin-gate-card {
+      background: #110f22;
+      border: 1.5px solid var(--border-neon);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ADMIN AUTH GATE (If not yet logged in) -->
+  <div id="admin-auth-gate" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+    <div class="admin-gate-card">
+      <div style="width: 64px; height: 64px; border-radius: 20px; background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan)); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px;">
+        🛡️
+      </div>
+      <h2 style="font-size: 1.6rem; font-weight: 800; color: #fff; margin-bottom: 8px;">Edu-Step Admin Portali</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px;">
+        Boshqaruv paneliga kirish uchun admin parolini yoki sub-admin hisobini kiriting
+      </p>
+
+      <form id="standalone-admin-login-form" onsubmit="handleStandaloneLogin(event)">
+        <div class="form-group" style="text-align: left; margin-bottom: 12px;">
+          <label class="form-label">Username (Ixtiyoriy sub-adminlar uchun):</label>
+          <input type="text" id="standalone-user-input" class="form-input" placeholder="@kamolov_admin yoki bo'sh qoldiring" />
+        </div>
+        <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+          <label class="form-label">Admin Maxfiy Kodi / Parol:</label>
+          <input type="password" id="standalone-code-input" class="form-input" placeholder="Kodni kiriting..." required autofocus />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; font-weight: 700; font-size: 1rem; margin-bottom: 14px;">
+          Tizimga Kirish →
+        </button>
+        <a href="index.html" class="btn-secondary" style="display: block; text-decoration: none; padding: 12px; font-size: 0.9rem; text-align: center;">
+          ← O'quvchilar Bosh Sahifasiga Qaytish
+        </a>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN MAIN WORKSPACE (Shown when authenticated) -->
+  <div id="admin-main-wrapper" style="display: none; padding: 30px 24px; max-width: 1400px; margin: 0 auto;">
+    <div id="admin-content-area"></div>
+  </div>
+
+  <!-- MODAL: STUDENT DETAIL INSPECTOR -->
+  <div id="student-detail-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 960px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <span class="badge badge-purple">O'QUVCHI MONITORINGI VA TEKSHIRUVI</span>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeStudentDetail()">✕</button>
+      </div>
+      <div id="student-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD LESSON WIZARD -->
+  <div id="add-lesson-wizard-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 880px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom: 4px;">DARS QO'SHISH USTASI (WIZARD)</span>
+          <h2 style="font-size: 1.5rem; color: #fff; font-weight: 800;">Yangi Dars Materiallarini Shakllantirish (1-30)</h2>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeAddLessonWizard()">✕</button>
+      </div>
+
+      <!-- Stepper Header -->
+      <div id="wizard-stepper-container" class="wizard-stepper"></div>
+
+      <!-- Step Body -->
+      <div id="wizard-step-body" style="background: #15132a; border-radius: 20px; padding: 24px; border: 1px solid var(--border-subtle); margin-bottom: 20px;"></div>
+
+      <!-- Stepper Footer Nav Buttons -->
+      <div id="wizard-nav-footer"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: RECEIPT FULL IMAGE PREVIEW -->
+  <div id="receipt-preview-modal" class="modal-overlay" style="display: none;" onclick="AdminController.closeReceiptPreview()">
+    <div class="modal-content" style="max-width: 600px; text-align: center; background: #0c0a1a;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h4 style="font-size: 1.1rem; color: #fff; font-weight: 700;">To'lov Cheki Rasmi</h4>
+        <button class="btn-secondary" style="padding: 4px 10px;" onclick="AdminController.closeReceiptPreview()">✕</button>
+      </div>
+      <img id="receipt-preview-img" src="" alt="Chek" style="width: 100%; max-height: 75vh; object-fit: contain; border-radius: 12px; border: 1px solid var(--border-subtle);" />
+    </div>
+  </div>
+
+  <!-- MODAL: ADD EXAM VARIANT (Admin) -->
+  <div id="add-exam-variant-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom: 4px;">IMTIHON TESTI BOSHQARUVI</span>
+          <h3 style="font-size: 1.4rem; color: #fff; font-weight: 800;">Yangi Test Varianti Qo'shish</h3>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeAddExamVariantModal()">✕</button>
+      </div>
+      <div id="exam-variant-form-body"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="data/curriculum.js"></script>
+  <script src="data/placement-test.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/tracker.js"></script>
+  <script src="admin/admin.js"></script>
+
+  <script>
+    function checkAdminState() {
+      if (AdminController.checkSession()) {
+        document.getElementById('admin-auth-gate').style.display = 'none';
+        document.getElementById('admin-main-wrapper').style.display = 'block';
+        AdminController.renderAdminView();
+      } else {
+        document.getElementById('admin-auth-gate').style.display = 'flex';
+        document.getElementById('admin-main-wrapper').style.display = 'none';
+      }
+    }
+
+    function handleStandaloneLogin(e) {
+      e.preventDefault();
+      const userInput = document.getElementById('standalone-user-input');
+      const codeInput = document.getElementById('standalone-code-input');
+      const user = userInput ? userInput.value.trim() : '';
+      const code = codeInput ? codeInput.value.trim() : '';
+
+      if (AdminController.verifyCode(code, user)) {
+        checkAdminState();
+      } else {
+        const lock = (typeof Security !== 'undefined' && Security.checkLockout) ? Security.checkLockout() : { locked: false };
+        if (!lock.locked) {
+          alert("Xato maxfiy kod yoki parol! Qayta urinib ko'ring (3 ta noto'g'ri urinishdan so'ng 15 daqiqaga bloklanadi).");
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAdminState();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edu-Step - Multilevel & IELTS English Platform</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7c5cfa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Edu-Step">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="nav-container">
+      <div class="brand-logo" onclick="App.showView('dashboard')">
+        <div class="brand-icon">E</div>
+        <span>EduLearn</span>
+      </div>
+
+      <div class="nav-stats" id="nav-stats-bar">
+        <!-- Daily Tracker Chip -->
+        <div class="stat-chip active-timer" title="Bugungi o'rganish vaqtingiz">
+          <div class="pulse-dot"></div>
+          <span>Bugun:</span>
+          <strong id="nav-timer-val" style="color: #fff; font-family: monospace; font-size: 1rem;">00:00:00</strong>
+          <span style="font-size: 0.8rem; color: var(--accent-purple-light);" id="nav-timer-pct">0%</span>
+        </div>
+
+        <button class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; border-color: rgba(56, 189, 248, 0.4); color: #7dd3fc;" onclick="App.openSupportModal()">
+          💬 Qo'llab-quvvatlash (@uzbb_a)
+        </button>
+
+        <button class="btn-secondary" id="install-app-btn" style="padding: 8px 16px; font-size: 0.85rem; border-color: #10b981; color: #34d399;" onclick="App.installPWA()">
+          📲 Ilovani O'rnatish
+        </button>
+
+        <button class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="App.openAdminLoginModal()">
+          🔒 Admin Portal
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main style="max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px;">
+
+    <!-- 1. LANDING & PRESENTATION VIEW -->
+    <section id="landing-view" style="display: none;">
+      <div style="text-align: center; max-width: 800px; margin: 20px auto 30px;">
+        <span class="badge badge-purple" style="margin-bottom: 14px; font-size: 0.9rem; padding: 6px 16px;">
+          ⭐ Multilevel (CEFR) & IELTS Tayyorgarligi
+        </span>
+        <h1 style="font-size: 2.8rem; font-weight: 900; line-height: 1.2; margin-bottom: 16px; background: linear-gradient(135deg, #fff 40%, var(--accent-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Ingliz Tilini Tizimli Va Natijali O'rganing
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.15rem; margin-bottom: 24px;">
+          Har bir darsda video darslik, multfilm, 35+ lug'at, testlar va gap tuzish mashqlari. 70% dan yuqori ball bilan keyingi darslarni oching!
+        </p>
+
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn-primary" style="padding: 16px 36px; font-size: 1.15rem;" onclick="App.openGoogleAuthModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+            Google Orqali Kirish
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Presentation Slider (Foydalanuvchi qiziqtirish uchun slayd) -->
+      <div class="hero-slider-wrap">
+        <div class="slide-box">
+          <div id="slide-content"></div>
+          
+          <div class="slider-controls">
+            <button class="btn-secondary" onclick="App.prevSlide()">
+              ◀ Oldingi Slayd
+            </button>
+            <div class="slide-dots" id="slide-dots"></div>
+            <button class="btn-secondary" onclick="App.nextSlide()">
+              Keyingi Slayd ▶
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ONBOARDING SETUP VIEW -->
+    <section id="onboarding-view" style="display: none; max-width: 800px; margin: 30px auto;">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-neon); border-radius: var(--radius-card); padding: 40px; box-shadow: 0 0 30px rgba(124, 92, 250, 0.25);">
+        <h2 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 8px;">O'quv Rejangizni Sozlash</h2>
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 28px;">
+          Sizga eng mos darslarni va kunlik rejangizni shakllantirish uchun bir necha savolga javob bering:
+        </p>
+
+        <!-- Step 1: Goal -->
+        <div class="form-group">
+          <label class="form-label">1. Asosiy maqsadingiz qaysi?</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="user_goal" value="multilevel" checked style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">Multilevel (CEFR B1-C1)</span>
+            </label>
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="user_goal" value="ielts" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">IELTS (Band 7.0+)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 2: Daily Time -->
+        <div class="form-group" style="margin-top: 24px;">
+          <label class="form-label">2. Kunlik qancha vaqt ajrata olasiz? (Minimal 1.5 soatdan 4 soatgacha)</label>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+            <label class="custom-pill-btn" style="padding: 12px 14px; font-size: 0.95rem; cursor: pointer;">
+              <input type="radio" name="daily_time" value="1.5" checked style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 6px;">1.5 Soat</span>
+            </label>
+            <label class="custom-pill-btn" style="padding: 12px 14px; font-size: 0.95rem; cursor: pointer;">
+              <input type="radio" name="daily_time" value="2.0" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 6px;">2.0 Soat</span>
+            </label>
+            <label class="custom-pill-btn" style="padding: 12px 14px; font-size: 0.95rem; cursor: pointer;">
+              <input type="radio" name="daily_time" value="2.5" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 6px;">2.5 Soat</span>
+            </label>
+            <label class="custom-pill-btn" style="padding: 12px 14px; font-size: 0.95rem; cursor: pointer;">
+              <input type="radio" name="daily_time" value="3.0" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 6px;">3.0 Soat</span>
+            </label>
+            <label class="custom-pill-btn" style="padding: 12px 14px; font-size: 0.95rem; cursor: pointer;">
+              <input type="radio" name="daily_time" value="4.0" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 6px;">4.0 Soat</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 3: Level -->
+        <div class="form-group" style="margin-top: 24px;">
+          <label class="form-label">3. O'z darajangizni qanday baholaysiz?</label>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="level_choice" value="beginner" checked style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">Bilmayman (0) yoki Boshlang'ich (Beginner)</span>
+            </label>
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="level_choice" value="elementary" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">Elementary (A2)</span>
+            </label>
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="level_choice" value="pre_intermediate" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">Pre-Intermediate (B1)</span>
+            </label>
+            <label class="custom-pill-btn" style="cursor: pointer;">
+              <input type="radio" name="level_choice" value="intermediate" style="accent-color: var(--accent-purple);">
+              <span class="pill-text" style="margin-left: 8px;">Intermediate (B2)</span>
+            </label>
+            <label class="custom-pill-btn" style="border-color: rgba(56, 189, 248, 0.4); cursor: pointer;">
+              <input type="radio" name="level_choice" value="test" style="accent-color: var(--accent-cyan);">
+              <span class="pill-text" style="margin-left: 8px; color: #38bdf8; font-weight: 700;">
+                📝 Bilmayman, Darajamni Aniqlash Testi orqali tekshirish (Placement Test)
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div style="margin-top: 32px; display: flex; justify-content: flex-end;">
+          <button class="btn-primary" style="padding: 16px 36px;" onclick="App.submitOnboarding()">
+            Darslarni Boshlash ▶
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. ASOSIY VIEW (Home Feed - Matching User's Screenshot) -->
+    <section id="home-view" class="app-view-container" style="display: none; max-width: 900px; margin: 0 auto;">
+      <!-- Top Level & Gamification Status Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="background: #15122b; border: 1.5px solid var(--border-neon); border-radius: 14px; padding: 6px 14px; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="App.switchBottomNav('lessons')">
+            <span id="home-level-title" style="color: #fff; font-weight: 700; font-size: 0.95rem;">Beginner (A0-A1)</span>
+            <span style="color: var(--accent-purple-light); font-size: 0.8rem;">▼</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="custom-pill-btn" style="padding: 6px 14px; border-radius: 20px; font-weight: 700; color: #fb923c; border-color: rgba(251, 146, 60, 0.4); background: rgba(251, 146, 60, 0.1);">
+            🔥 <span id="home-streak-count">1</span> kun
+          </div>
+          <div class="custom-pill-btn" style="padding: 6px 14px; border-radius: 20px; font-weight: 700; color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.1);">
+            ⭐ <span id="home-xp-count">15</span> XP
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Row: Bepul Kurslar & Pro Kurslar Cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+        <div class="vocab-card" style="padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="App.switchBottomNav('lessons')">
+          <div>
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">📖</div>
+            <div style="font-weight: 700; color: #fff; font-size: 1.05rem;">Bepul kurslar</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">1-Dars sinov darsi</div>
+          </div>
+          <span style="font-size: 1.3rem; color: var(--text-dim);">›</span>
+        </div>
+
+        <div class="vocab-card" style="padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-color: var(--accent-purple);" onclick="App.openPaymentModal()">
+          <div>
+            <div style="font-size: 1.8rem; margin-bottom: 6px;">👑</div>
+            <div style="font-weight: 700; color: #fff; font-size: 1.05rem;">Pro kurslar</div>
+            <div style="font-size: 0.8rem; color: #34d399;">30 ta to'liq dars</div>
+          </div>
+          <span style="font-size: 1.3rem; color: var(--accent-purple-light);">›</span>
+        </div>
+      </div>
+
+      <!-- Promotional Banner (Reklama & Yangiliklar) -->
+      <div style="background: linear-gradient(135deg, #3b0764, #1e1145); border: 1.5px solid rgba(168, 85, 247, 0.5); border-radius: 24px; padding: 22px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(112, 26, 117, 0.3);">
+        <div style="position: relative; z-index: 2; max-width: 65%;">
+          <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); margin-bottom: 8px;">
+            🌿 2-mavsum ligasi
+          </span>
+          <h3 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px;">
+            GENERAL ENGLISH & HEADWAY
+          </h3>
+          <p style="color: #e9d5ff; font-size: 0.88rem; margin-bottom: 14px;">
+            Kunlik mashqlar, speaking ovoz yozuvlari va multfilm epizodlari bilan darajangizni oshiring!
+          </p>
+          <button class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem; font-weight: 700;" onclick="App.switchBottomNav('lessons')">
+            Tezroq ishga tushsin →
+          </button>
+        </div>
+        <div style="font-size: 4.5rem; opacity: 0.85;">💻</div>
+      </div>
+
+      <!-- Missiyalar (Bugungi Topshiriqlar) -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff;">Missiyalar</h3>
+          <span style="color: var(--accent-purple-light); font-size: 0.85rem; font-weight: 600; cursor: pointer;" onclick="App.switchBottomNav('lessons')">Barchasi ›</span>
+        </div>
+
+        <div style="background: #14112e; border: 1.5px solid var(--border-neon); border-radius: 20px; padding: 20px; margin-bottom: 14px; cursor: pointer;" onclick="App.switchBottomNav('lessons')">
+          <div style="display: flex; gap: 8px; margin-bottom: 8px; align-items: center;">
+            <span class="badge badge-purple">IELTS / MULTILEVEL</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Band 5.0 dan Band 7.5 gacha</span>
+          </div>
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 10px;">
+            Why Learners Stop at Band 5.0 — The Six Habits of High Scorers
+          </h4>
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #0c0a1a; padding: 10px 14px; border-radius: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="width: 24px; height: 24px; border-radius: 50%; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem;">1</span>
+              <span style="color: #fff; font-size: 0.9rem; font-weight: 600;">The Six Habits of Band 5.0+</span>
+            </div>
+            <span style="color: var(--text-dim);">›</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tezkor Bo'limlar: Speaking, Kutubxona, Lug'at -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+        <div class="vocab-card" style="padding: 16px; text-align: center; cursor: pointer;" onclick="App.switchBottomNav('lessons')">
+          <div style="width: 48px; height: 48px; border-radius: 16px; background: rgba(244, 114, 182, 0.15); color: #f472b6; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+            💬
+          </div>
+          <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Speaking</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Ovozli mashq</div>
+        </div>
+
+        <div class="vocab-card" style="padding: 16px; text-align: center; cursor: pointer;" onclick="App.downloadCoursebookPDF()">
+          <div style="width: 48px; height: 48px; border-radius: 16px; background: rgba(52, 211, 153, 0.15); color: #34d399; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+            📚
+          </div>
+          <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Kutubxona</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">Oxford kitoblari</div>
+        </div>
+
+        <div class="vocab-card" style="padding: 16px; text-align: center; cursor: pointer;" onclick="App.switchBottomNav('activities')">
+          <div style="width: 48px; height: 48px; border-radius: 16px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+            🔤
+          </div>
+          <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Lug'at</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);">So'z o'yinlari</div>
+        </div>
+      </div>
+
+      <!-- Pro Promo Banner Strip -->
+      <div style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 18px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="App.openPaymentModal()">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="font-size: 2rem;">🎁</div>
+          <div>
+            <div style="font-weight: 800; color: #fff; font-size: 1.05rem;">Pro 100 000 - 240 000 so'm</div>
+            <div style="font-size: 0.8rem; color: #fef3c7;">Barcha 30 ta darsni doimiy ochish</div>
+          </div>
+        </div>
+        <span style="font-weight: 800; color: #fff; font-size: 1.2rem;">›</span>
+      </div>
+    </section>
+
+    <!-- 2. DARSLAR VIEW (30 ta Darslar ro'yxati va dars tugmalari) -->
+    <section id="dashboard-view" class="app-view-container" style="display: none;">
+      <!-- Welcome Hero Banner -->
+      <div style="background: linear-gradient(135deg, #191632, #121024); border: 1px solid var(--border-subtle); border-radius: var(--radius-card); padding: 32px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+          <div style="display: flex; gap: 10px; margin-bottom: 12px; align-items: center;">
+            <span id="dash-goal-badge" class="badge badge-purple">MULTILEVEL</span>
+            <span id="dash-level-badge" class="badge badge-emerald">Beginner (A0-A1)</span>
+          </div>
+          <h2 style="font-size: 2rem; font-weight: 800; color: #fff;">
+            Salom, <span id="dash-user-name" style="color: var(--accent-purple-light);">O'quvchi</span>! 👋
+          </h2>
+          <p style="color: var(--text-muted); font-size: 1rem; margin-top: 6px;">
+            Bugungi maqsadingizga erishish uchun darslarni davom ettiring. 1-dars ochiq, keyingi darslar test orqali ochiladi!
+          </p>
+        </div>
+
+        <!-- Coursebook PDF & Premium Access Card -->
+        <div style="background: #110f22; border: 1.5px solid var(--border-neon); border-radius: 20px; padding: 20px; min-width: 290px; box-shadow: 0 0 20px rgba(124, 92, 250, 0.2);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 0.85rem; color: var(--accent-purple-light); font-weight: 700; text-transform: uppercase;">Daraja & Kitob</span>
+            <span id="dash-level-price-badge" class="badge badge-amber">100 000 so'm</span>
+          </div>
+          <div id="dash-book-title" style="font-weight: 700; color: #fff; margin: 6px 0 12px; font-size: 1.05rem;">Beginner English Coursebook (PDF)</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" style="flex: 1; padding: 10px 14px; font-size: 0.88rem;" onclick="App.downloadCoursebookPDF()">
+              📥 PDF Kitob
+            </button>
+            <button id="dash-buy-level-btn" class="btn-primary" style="flex: 1.2; padding: 10px 14px; font-size: 0.88rem; background: linear-gradient(135deg, #10b981, #059669);" onclick="App.openPaymentModal()">
+              💳 Faollashtirish
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Level Heading -->
+      <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h3 id="dash-level-title" style="font-size: 1.5rem; font-weight: 800; color: #fff;">Beginner (A0 - A1) Darslari</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Darslarni ketma-ketlikda bajaring. Keyingi darsni ochish uchun ustiga bosing va 70%+ testdan o'ting!
+          </p>
+        </div>
+      </div>
+
+      <!-- 20 Lessons List Container (Exact Button Style from User's Image) -->
+      <div id="lessons-list-container" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Dynamically rendered pill buttons -->
+      </div>
+    </section>
+
+    <!-- 4. LESSON VIEW (5 ta asosiy bo'lim tugmalari va kontent) -->
+    <section id="lesson-view" style="display: none;">
+      <!-- Back button & lesson header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+        <button class="btn-secondary" onclick="App.showView('dashboard')">
+          ◀ Darslar Ro'yxatiga Qaytish
+        </button>
+        <h2 id="lesson-header-title" style="font-size: 1.5rem; font-weight: 800; color: #fff;">1-Dars: To Be fe'li va Salomlashish</h2>
+        <span class="badge badge-emerald">Faol Dars</span>
+      </div>
+
+      <!-- 5 Reference Action Pill Buttons (Rasmdagi binafsha-alyuminiy uslubida) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 28px;">
+        <button class="custom-pill-btn active" id="lesson-tab-btn-video" onclick="App.setLessonTab('video')">
+          <span class="pill-num">1</span>
+          <span class="pill-text">Video Lesson</span>
+        </button>
+        <button class="custom-pill-btn" id="lesson-tab-btn-cartoon" onclick="App.setLessonTab('cartoon')">
+          <span class="pill-num">2</span>
+          <span class="pill-text">Cartoon / Scene</span>
+        </button>
+        <button class="custom-pill-btn" id="lesson-tab-btn-vocab" onclick="App.setLessonTab('vocab')">
+          <span class="pill-num">3</span>
+          <span class="pill-text">Vocabularies</span>
+        </button>
+        <button class="custom-pill-btn" id="lesson-tab-btn-quiz" onclick="App.setLessonTab('quiz')">
+          <span class="pill-num">4</span>
+          <span class="pill-text">Multiple Choice</span>
+        </button>
+        <button class="custom-pill-btn" id="lesson-tab-btn-exercises" onclick="App.setLessonTab('exercises')">
+          <span class="pill-num">5</span>
+          <span class="pill-text">Gap Tuzish & Tarjima</span>
+        </button>
+        <button class="custom-pill-btn" id="lesson-tab-btn-practice" onclick="App.setLessonTab('practice')">
+          <span class="pill-num">6</span>
+          <span class="pill-text">Daily Practice</span>
+        </button>
+      </div>
+
+      <!-- Lesson Dynamic Tab Body Container -->
+      <div id="lesson-tab-body">
+        <!-- Rendered by App.renderLessonTabContent() -->
+      </div>
+    </section>
+
+    <!-- 3. ACTIVITIES VIEW (Lug'at & Xotira Bog'i, 6 ta Interaktiv O'yinlar, Podkastlar) -->
+    <section id="activities-view" class="app-view-container" style="display: none; max-width: 900px; margin: 0 auto;">
+      <!-- Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="badge badge-cyan" style="margin-bottom: 6px;">INTERAKTIV MASHQLAR & O'YINLAR</span>
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">Activities & Lug'at Bog'i 🎮</h2>
+        </div>
+        <div class="custom-pill-btn" style="padding: 8px 16px; border-color: #38bdf8; background: rgba(56, 189, 248, 0.1); color: #38bdf8; font-weight: 700;">
+          💡 Jami O'rganilgan: <span id="activities-total-words" style="margin-left: 6px; font-weight: 900; color: #fff;">48</span> ta so'z
+        </div>
+      </div>
+
+      <!-- XOTIRA BOG'I (Spaced Repetition Garden Stages - Screenshot Matching) -->
+      <div style="background: linear-gradient(135deg, #14112e, #0e0d22); border: 1.5px solid rgba(16, 185, 129, 0.3); border-radius: 24px; padding: 24px; margin-bottom: 28px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px;">
+              <span>🌱 Lug'at & Xotira Bog'i</span>
+            </h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">
+              Har bir yangi so'z urug'dan mevali daraxtgacha 5 bosqichda uzoq muddatli xotiraga aylanadi.
+            </p>
+          </div>
+          <button class="btn-primary" style="padding: 10px 18px; font-size: 0.9rem; background: linear-gradient(135deg, #10b981, #059669);" onclick="App.waterMemoryGarden()">
+            💧 Bog'ni Sug'orish (Takrorlash)
+          </button>
+        </div>
+
+        <!-- 5 Garden Stages Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+          <div class="garden-stage-card" id="garden-card-urug" onclick="App.selectGardenStage('urug')">
+            <div class="garden-stage-icon">🌱</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Urug'</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0;">0 kun (Yangi)</div>
+            <div style="font-weight: 800; color: #38bdf8; font-size: 1.1rem;"><span id="urug-count">15</span> so'z</div>
+          </div>
+          <div class="garden-stage-card active" id="garden-card-nihol" onclick="App.selectGardenStage('nihol')">
+            <div class="garden-stage-icon">🌿</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Nihol</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0;">1-kun takror</div>
+            <div style="font-weight: 800; color: #34d399; font-size: 1.1rem;"><span id="nihol-count">12</span> so'z</div>
+          </div>
+          <div class="garden-stage-card" id="garden-card-kochat" onclick="App.selectGardenStage('kochat')">
+            <div class="garden-stage-icon">🪴</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Ko'chat</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0;">3-kun takror</div>
+            <div style="font-weight: 800; color: #a78bfa; font-size: 1.1rem;"><span id="kochat-count">9</span> so'z</div>
+          </div>
+          <div class="garden-stage-card" id="garden-card-daraxt" onclick="App.selectGardenStage('daraxt')">
+            <div class="garden-stage-icon">🌳</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Daraxt</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0;">7-kun takror</div>
+            <div style="font-weight: 800; color: #fbbf24; font-size: 1.1rem;"><span id="daraxt-count">8</span> so'z</div>
+          </div>
+          <div class="garden-stage-card" id="garden-card-meva" onclick="App.selectGardenStage('meva')">
+            <div class="garden-stage-icon">🍎</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.95rem;">Meva</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0;">30-kun (Xotirada)</div>
+            <div style="font-weight: 800; color: #f43f5e; font-size: 1.1rem;"><span id="meva-count">4</span> so'z</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Stage Details & Words Container -->
+        <div id="garden-stage-detail" style="margin-top: 20px;">
+          <!-- Rendered by App.selectGardenStage() -->
+        </div>
+      </div>
+
+      <!-- 6 TA INTERAKTIV O'YINLAR (Interactive Vocabulary & Grammar Games) -->
+      <div style="margin-bottom: 28px;">
+        <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 16px;">
+          🎮 6 ta Interaktiv Ta'limiy O'yinlar
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+          <!-- Game 1: Shifokorda Puzzle -->
+          <div class="game-grid-card" onclick="App.openGame('puzzle')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(244, 63, 94, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">🏥</div>
+              <div>
+                <span class="badge badge-purple" style="font-size: 0.72rem;">GAP TUZISH PUZZLE</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">"Shifokorda" Puzzle</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              Kasalxona va dorixona vaziyatlarida aralash so'zlarni to'g'ri tartibda terib gap tuzing!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #38bdf8; font-weight: 700; font-size: 0.85rem;">+25 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+
+          <!-- Game 2: Tezkor Blitz -->
+          <div class="game-grid-card" onclick="App.openGame('blitz')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(251, 146, 60, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">⚡</div>
+              <div>
+                <span class="badge badge-amber" style="font-size: 0.72rem;">60 SONIYA VAQT</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">Tezkor Blitz</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              1 daqiqa ichida nechta so'zning o'zbekcha tarjimasini topa olasiz? Diqqat va tezlik sinovi!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #fb923c; font-weight: 700; font-size: 0.85rem;">+30 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+
+          <!-- Game 3: Memory Match -->
+          <div class="game-grid-card" onclick="App.openGame('match')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(56, 189, 248, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">🃏</div>
+              <div>
+                <span class="badge badge-cyan" style="font-size: 0.72rem;">XOTIRA O'YINI</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">So'z Juftligi</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              Inglizcha so'z va uning tarjimasini kartalar ortidan topib juftlang. Xotirani charxlaydi!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #38bdf8; font-weight: 700; font-size: 0.85rem;">+20 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+
+          <!-- Game 4: Grammar Duel -->
+          <div class="game-grid-card" onclick="App.openGame('grammar')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(168, 85, 247, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">⚔️</div>
+              <div>
+                <span class="badge badge-purple" style="font-size: 0.72rem;">GRAMMATIKA BATTLE</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">Grammar Duel</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              Fe'l zamonlari, artikllar va predloglar bo'yicha eng to'g'ri formulani tezkor belgilang!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #c084fc; font-weight: 700; font-size: 0.85rem;">+25 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+
+          <!-- Game 5: Audio Challenge -->
+          <div class="game-grid-card" onclick="App.openGame('audio')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(52, 211, 153, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">🎧</div>
+              <div>
+                <span class="badge badge-emerald" style="font-size: 0.72rem;">LISTENING & SPELLING</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">Audio Challenge</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              Native diktor talaffuz qilgan yangi so'zni eshitib, to'g'ri yozilishini kiriting!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #34d399; font-weight: 700; font-size: 0.85rem;">+20 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+
+          <!-- Game 6: Word Scramble -->
+          <div class="game-grid-card" onclick="App.openGame('scramble')">
+            <div style="display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px;">
+              <div style="font-size: 2.2rem; background: rgba(245, 158, 11, 0.15); width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center;">🔠</div>
+              <div>
+                <span class="badge badge-amber" style="font-size: 0.72rem;">HARFLAR TERISH</span>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: #fff; margin-top: 4px;">Word Scramble</h4>
+              </div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px; line-height: 1.4;">
+              Aralash berilgan harflardan ma'noli inglizcha so'z yasang va lug'at boyligingizni boyiting!
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: #fbbf24; font-weight: 700; font-size: 0.85rem;">+20 XP</span>
+              <button class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem;">O'ynash ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIO HIKOYALAR VA PODKASTLAR (Screenshot 4 Matching) -->
+      <div style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff;">🎧 Audio Hikoyalar & Podkastlar</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Tinglab tushunish va so'z boyligini oshirish audio darslari</p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;" id="podcasts-list-container">
+          <!-- Dynamically populated by App.renderActivitiesView() -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PROFIL VIEW (Matching User's Screenshots) -->
+    <section id="profile-view" class="app-view-container" style="display: none; max-width: 680px; margin: 0 auto;">
+      <!-- Profile Header / Title -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: #fff;">Mening Profilim</h2>
+        <button class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="App.openEditProfileModal()">
+          ⚙️ Tahrirlash
+        </button>
+      </div>
+
+      <!-- Main User Profile Card (Screenshot 2) -->
+      <div style="background: #14112c; border: 1.5px solid var(--border-neon); border-radius: 24px; padding: 26px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(124, 92, 250, 0.2);">
+        <!-- Avatar & Name -->
+        <div style="text-align: center; margin-bottom: 22px;">
+          <div class="profile-avatar-circle" id="profile-avatar-initials">AK</div>
+          <h3 id="profile-user-fullname" style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 4px;">
+            Abdukarim Kamolov
+          </h3>
+          <span id="profile-user-badge" class="badge badge-purple" style="font-size: 0.8rem;">MULTILEVEL / BEGINNER</span>
+        </div>
+
+        <!-- Shaxsiy ma'lumotlar Box -->
+        <div style="background: #0d0b1d; border-radius: 18px; padding: 18px 20px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.06);">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple-light); text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.5px;">
+            Shaxsiy ma'lumotlar
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 8px;">
+              <span style="color: var(--text-muted); font-size: 0.92rem;">Yosh:</span>
+              <strong id="profile-user-age" style="color: #fff; font-size: 0.95rem;">19</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 8px;">
+              <span style="color: var(--text-muted); font-size: 0.92rem;">Username:</span>
+              <strong id="profile-user-username" style="color: #38bdf8; font-size: 0.95rem; font-family: monospace;">@uzbellas</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 8px;">
+              <span style="color: var(--text-muted); font-size: 0.92rem;">Jins:</span>
+              <strong id="profile-user-gender" style="color: #fff; font-size: 0.95rem;">Erkak</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="color: var(--text-muted); font-size: 0.92rem;">Telefon raqam:</span>
+              <strong id="profile-user-phone" style="color: #fff; font-size: 0.95rem;">+998888525888</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tahrirlash Button -->
+        <button class="btn-primary" style="width: 100%; padding: 14px; font-weight: 700; font-size: 1rem; border-radius: 16px;" onclick="App.openEditProfileModal()">
+          ✏️ Tahrirlash
+        </button>
+      </div>
+
+      <!-- 4 Stat Boxes (2x2 Grid - Screenshot 1) -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div class="profile-stat-box">
+          <div style="font-size: 1.8rem;">⏱️</div>
+          <div>
+            <div id="profile-study-time" style="font-size: 1.15rem; font-weight: 800; color: #fff;">0 daqiqa</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">O'quv vaqti</div>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div style="font-size: 1.8rem;">💡</div>
+          <div>
+            <div id="profile-lessons-count" style="font-size: 1.15rem; font-weight: 800; color: #fff;">0 darslar</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Tugallangan darslar</div>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div style="font-size: 1.8rem;">🔥</div>
+          <div>
+            <div id="profile-current-streak" style="font-size: 1.15rem; font-weight: 800; color: #fb923c;">1 kun</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Joriy seriya</div>
+          </div>
+        </div>
+
+        <div class="profile-stat-box">
+          <div style="font-size: 1.8rem;">⚡</div>
+          <div>
+            <div id="profile-longest-streak" style="font-size: 1.15rem; font-weight: 800; color: #fbbf24;">1 kun</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Eng uzun seriya</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Haftalik O'quv Grafigi (Screenshot 1) -->
+      <div class="weekly-chart-card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: #fff;">Haftalik o'quv grafigi</h4>
+          <span id="profile-today-xp" style="font-size: 0.85rem; font-weight: 700; color: #fb923c;">15 XP bugun</span>
+        </div>
+
+        <!-- 7 Days Bar Columns: Ya, Du, Se, Ch, Pa, Ju, Sh -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; padding: 10px 0;">
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 15%;"></div></div>
+            <span class="chart-day-label">Ya</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 40%;"></div></div>
+            <span class="chart-day-label">Du</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 25%;"></div></div>
+            <span class="chart-day-label">Se</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 60%;"></div></div>
+            <span class="chart-day-label">Ch</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 35%;"></div></div>
+            <span class="chart-day-label">Pa</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height: 50%;"></div></div>
+            <span class="chart-day-label">Ju</span>
+          </div>
+          <div class="chart-col">
+            <div class="chart-bar-wrap"><div class="chart-bar-fill active-day" style="height: 80%;"></div></div>
+            <span class="chart-day-label today">Sh</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="btn-secondary" style="padding: 10px 24px; font-size: 0.9rem; color: #fb7185; border-color: rgba(251, 113, 133, 0.3);" onclick="App.handleLogout()">
+          🚪 Hisobdan Chiqish
+        </button>
+      </div>
+    </section>
+
+    <!-- 5. ADMIN VIEW -->
+    <section id="admin-view" style="display: none;">
+      <div id="admin-content-area"></div>
+    </section>
+
+  </main>
+
+  <!-- STICKY BOTTOM 4-TAB NAVIGATION BAR -->
+  <nav id="app-bottom-nav" class="bottom-nav-bar" style="display: none;">
+    <button class="bottom-nav-item active" id="bottom-nav-home" onclick="App.switchBottomNav('home')">
+      <span class="nav-icon">🏠</span>
+      <span>Asosiy</span>
+    </button>
+    <button class="bottom-nav-item nav-lessons" id="bottom-nav-lessons" onclick="App.switchBottomNav('lessons')">
+      <span class="nav-icon">📖</span>
+      <span>Darslar</span>
+    </button>
+    <button class="bottom-nav-item nav-activities" id="bottom-nav-activities" onclick="App.switchBottomNav('activities')">
+      <span class="nav-icon">🎮</span>
+      <span>Activities</span>
+    </button>
+    <button class="bottom-nav-item nav-profile" id="bottom-nav-profile" onclick="App.switchBottomNav('profile')">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: EDIT PROFILE (Yosh, Username, Jins, Telefon) -->
+  <div id="edit-profile-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <h3 style="font-size: 1.35rem; color: #fff; font-weight: 800;">✏️ Profilni Tahrirlash</h3>
+        <button class="btn-secondary" style="padding: 4px 10px;" onclick="App.closeEditProfileModal()">✕</button>
+      </div>
+
+      <form onsubmit="App.saveEditProfile(event)">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">To'liq ismingiz:</label>
+          <input type="text" id="edit-profile-name" class="form-input" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label">Username (@username):</label>
+          <input type="text" id="edit-profile-username" class="form-input" placeholder="@uzbellas" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div class="form-group">
+            <label class="form-label">Yosh:</label>
+            <input type="number" id="edit-profile-age" class="form-input" min="6" max="99" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jins:</label>
+            <select id="edit-profile-gender" class="form-input">
+              <option value="Erkak">Erkak</option>
+              <option value="Ayol">Ayol</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 22px;">
+          <label class="form-label">Telefon raqamingiz:</label>
+          <input type="tel" id="edit-profile-phone" class="form-input" placeholder="+998888525888" required>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-secondary" style="flex: 1;" onclick="App.closeEditProfileModal()">Bekor qilish</button>
+          <button type="submit" class="btn-primary" style="flex: 1.3;">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: INTERACTIVE MINI GAMES MODAL -->
+  <div id="game-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 680px; max-height: 85vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="game-modal-icon" style="font-size: 1.8rem;">🎮</span>
+          <div>
+            <h3 id="game-modal-title" style="font-size: 1.35rem; color: #fff; font-weight: 800;">O'yin</h3>
+            <span id="game-modal-badge" class="badge badge-purple" style="font-size: 0.75rem;">Interactive Mini Game</span>
+          </div>
+        </div>
+        <button class="btn-secondary" style="padding: 4px 10px;" onclick="App.closeGameModal()">✕</button>
+      </div>
+
+      <!-- Game Dynamic Screen Body -->
+      <div id="game-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: GOOGLE AUTH SIMULATION -->
+  <div id="google-auth-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 440px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="brand-icon" style="margin: 0 auto 14px; width: 48px; height: 48px; font-size: 1.5rem;">G</div>
+        <h3 style="font-size: 1.4rem; color: #fff; font-weight: 700;">Google Orqali Kirish</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Platformaga kirish uchun ism va familiyangizni yozing</p>
+      </div>
+
+      <form onsubmit="App.handleGoogleSignIn(event)">
+        <div class="form-group">
+          <label class="form-label">To'liq ismingiz:</label>
+          <input type="text" id="auth-name-input" class="form-input" placeholder="Masalan: Abdulaziz Zarifov" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefon raqamingiz (Aloqa va xatolarni tekshirish uchun):</label>
+          <input type="tel" id="auth-phone-input" class="form-input" placeholder="+998 90 123 45 67" required>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn-secondary" style="flex: 1;" onclick="App.closeGoogleAuthModal()">Bekor qilish</button>
+          <button type="submit" class="btn-primary" style="flex: 1;">Kirish ▶</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: SUPPORT & HELP CENTER (@uzbb_a) -->
+  <div id="support-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.8rem;">💬</span>
+          <h3 style="font-size: 1.35rem; color: #fff; font-weight: 800;">Qo'llab-quvvatlash Markazi</h3>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="App.closeSupportModal()">✕</button>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+        Darslar, to'lovlar yoki saytda biror muammoga duch kelsangiz, to'g'ridan-to'g'ri Telegram orqali yozishingiz yoki shu yerda murojaat qoldirishingiz mumkin:
+      </p>
+
+      <!-- Telegram Direct Button -->
+      <div style="margin-bottom: 24px; text-align: center;">
+        <a href="https://t.me/uzbb_a" target="_blank" class="support-telegram-btn" style="width: 100%;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.63 3.73-.53.36-1.02.54-1.45.53-.48-.01-1.4-.27-2.09-.49-.84-.27-1.51-.42-1.45-.89.03-.25.38-.51 1.07-.78 4.19-1.82 6.99-3.03 8.4-3.61 4-.1.66 2.83.69 2.94.02.04.05.07.09.07z"/></svg>
+          Telegramda Bog'lanish: @uzbb_a
+        </a>
+      </div>
+
+      <div style="text-align: center; color: var(--text-dim); font-size: 0.85rem; margin-bottom: 18px; position: relative;">
+        <span style="background: var(--bg-card); padding: 0 10px; position: relative; z-index: 1;">yoki sayt orqali yozing</span>
+        <div style="border-top: 1px solid var(--border-subtle); margin-top: -9px;"></div>
+      </div>
+
+      <!-- Internal Support Message Form -->
+      <form onsubmit="App.handleSupportSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Ismingiz:</label>
+          <input type="text" id="support-name-input" class="form-input" placeholder="Ismingizni kiriting" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefon raqamingiz:</label>
+          <input type="tel" id="support-phone-input" class="form-input" placeholder="+998 90 123 45 67" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Savolingiz yoki muammo tavsifi:</label>
+          <textarea id="support-msg-input" class="form-input" rows="3" placeholder="Qanday yordam kerak?" required></textarea>
+        </div>
+        <div style="margin-top: 20px;">
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; font-weight: 700;">
+            Xabarni Yuborish (Admin tekshiruvi uchun) ▶
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PAYMENT & PREMIUM LEVEL PURCHASE -->
+  <div id="payment-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 560px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <span class="badge badge-amber" style="margin-bottom: 4px;">PREMIUM DARSLAR</span>
+          <h3 style="font-size: 1.4rem; color: #fff; font-weight: 800;">Darajani Faollashtirish</h3>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="App.closePaymentModal()">✕</button>
+      </div>
+
+      <div style="background: #110f22; border-radius: 18px; padding: 18px; margin-bottom: 20px; border: 1px solid var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Tanlangan Daraja:</div>
+            <div id="pay-modal-level-name" style="color: #fff; font-weight: 700; font-size: 1.15rem;">Beginner (A0-A1)</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="color: var(--text-muted); font-size: 0.85rem;">To'lov Summasi:</div>
+            <div id="pay-modal-level-price" style="color: #34d399; font-weight: 800; font-size: 1.3rem;">100 000 so'm</div>
+          </div>
+        </div>
+        <p style="color: #a5a1c8; font-size: 0.85rem; margin-top: 10px;">
+          * Ushbu to'lovdan so'ng ushbu darajaning barcha 30 ta darsi siz uchun to'liq va doimiy ochiladi!
+        </p>
+      </div>
+
+      <!-- Payment Card Details Box -->
+      <div class="payment-card-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="color: #a28eff; font-size: 0.85rem; font-weight: 700;">TO'LOV UCHUN KARTA:</span>
+          <span class="badge badge-purple">HUMO / UZCARD</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #0c0a1a; padding: 12px 16px; border-radius: 14px; margin-bottom: 10px;">
+          <strong id="admin-card-number" style="font-family: monospace; font-size: 1.25rem; color: #fff; letter-spacing: 2px;">4097 8300 1157 3835</strong>
+          <button type="button" class="copy-card-btn" onclick="App.copyCardNumber()">Nusxa olish</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.85rem;">
+          <span>Karta egasi: <strong id="admin-card-owner">Abdukarim Kamolov</strong></span>
+          <span>To'lov: <strong>Avtomatik / Ilova</strong></span>
+        </div>
+      </div>
+
+      <!-- Automatic Payment Apps Buttons -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 0.85rem; color: #a28eff; font-weight: 700; margin-bottom: 8px;">
+          ⚡ TO'LOV ILOVASIGA AVTOMATIK O'TISH (Karta avtomatik nusxalanadi):
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 8px;">
+          <button type="button" class="btn-secondary" style="padding: 8px 6px; font-size: 0.8rem; font-weight: 700; border-color: #00cccc; color: #00cccc; background: rgba(0, 204, 204, 0.1);" onclick="App.openPaymentApp('Payme', 'https://payme.uz/')">
+            💳 Payme
+          </button>
+          <button type="button" class="btn-secondary" style="padding: 8px 6px; font-size: 0.8rem; font-weight: 700; border-color: #0088cc; color: #0088cc; background: rgba(0, 136, 204, 0.1);" onclick="App.openPaymentApp('Click', 'https://click.uz/')">
+            ⚡ Click
+          </button>
+          <button type="button" class="btn-secondary" style="padding: 8px 6px; font-size: 0.8rem; font-weight: 700; border-color: #8b5cf6; color: #a78bfa; background: rgba(139, 92, 246, 0.1);" onclick="App.openPaymentApp('Uzum', 'https://uzumbank.uz/')">
+            🍇 Uzum
+          </button>
+          <button type="button" class="btn-secondary" style="padding: 8px 6px; font-size: 0.8rem; font-weight: 700; border-color: #10b981; color: #34d399; background: rgba(16, 185, 129, 0.1);" onclick="App.openPaymentApp('Paynet', 'https://paynet.uz/')">
+            🌐 Paynet
+          </button>
+          <button type="button" class="btn-secondary" style="padding: 8px 6px; font-size: 0.8rem; font-weight: 700; border-color: #f59e0b; color: #fbbf24; background: rgba(245, 158, 11, 0.1);" onclick="App.openPaymentApp('Xazna', 'https://xazna.uz/')">
+            🏦 Xazna
+          </button>
+        </div>
+      </div>
+
+      <!-- Free Promo Code Activation Section -->
+      <div style="background: rgba(139, 92, 246, 0.12); border: 1.5px dashed var(--accent-purple); border-radius: 16px; padding: 16px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="color: #fff; font-weight: 700; font-size: 0.95rem;">🎁 Bepul Promo-kod / Username orqali faollashtirish</span>
+          <span class="badge badge-purple">Bepul</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 12px;">
+          Agar sizda promo-kod bo'lsa yoki <strong>@username1</strong> orqali adminga bepul so'rov yubormoqchi bo'lsangiz, shu yerga yozing:
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="pay-promo-input" class="form-input" placeholder="Masalan: @username1" style="font-size: 0.9rem;" />
+          <button type="button" class="btn-primary" style="padding: 10px 16px; font-size: 0.85rem; font-weight: 700; white-space: nowrap;" onclick="App.handlePromoSubmit()">
+            Yuborish 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- Receipt Upload Form -->
+      <form onsubmit="App.handlePaymentReceiptSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">To'lov chekining rasmi (Skrinshot):</label>
+          <input type="file" id="pay-receipt-file-input" class="form-input" accept="image/*" onchange="App.handleReceiptFileSelect(event)" required>
+          <div id="pay-receipt-preview-wrap" style="display: none; margin-top: 10px; text-align: center;">
+            <img id="pay-receipt-preview-img" src="" alt="Chek" style="max-height: 120px; border-radius: 10px; border: 1px solid var(--border-subtle);">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Telegram username (@username) yoki telefon raqamingiz:</label>
+          <input type="text" id="pay-telegram-user-input" class="form-input" placeholder="Masalan: @username1 yoki +998 90 123 45 67" required>
+        </div>
+
+        <div style="margin-top: 22px;">
+          <button type="submit" class="btn-primary" style="width: 100%; padding: 14px; font-weight: 800; font-size: 1.05rem; background: linear-gradient(135deg, #10b981, #059669);">
+            Chekni Yuborish (Darslarni ochish uchun) ▶
+          </button>
+          <p style="text-align: center; color: var(--text-dim); font-size: 0.82rem; margin-top: 8px;">
+            Chek yuborilgach admin panelda tekshiriladi va 5-15 daqiqa ichida barcha 30 ta darsingiz ochiladi.
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ANTI-CHEAT TERMINATION ALERT -->
+  <div id="anti-cheat-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px; text-align: center;">
+      <div style="font-size: 3.5rem; margin-bottom: 12px;">🚫</div>
+      <h3 style="font-size: 1.4rem; color: #fb7185; font-weight: 800; margin-bottom: 12px;">XAVFSIZLIK: TEST BEKOR QILINDI!</h3>
+      <p style="color: #e2dfec; font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+        Siz test jarayonida boshqa oynaga, tabga yoki dasturga o'tdingiz. Sun'iy intellekt (AI) yoki shpargalkadan foydalanmaslik uchun test avtomatik ravishda to'xtatildi va bekor qilindi.
+      </p>
+      <button class="btn-primary" style="padding: 12px 28px;" onclick="document.getElementById('anti-cheat-modal').style.display='none'">
+        Tushundim
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: COMPREHENSIVE PLACEMENT EXAM (30 MCQs + Writing + Speaking + Anti-Cheat) -->
+  <div id="placement-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 860px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom: 4px;">DARAJA ANIKLASH IMTIHONI</span>
+          <h3 id="exam-variant-title" style="font-size: 1.45rem; color: #fff; font-weight: 800;">30 ta Savol + Writing & Speaking</h3>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="App.closePlacementExamModal()">✕</button>
+      </div>
+
+      <!-- Anti-Cheat Warning Banner -->
+      <div class="anti-cheat-banner">
+        <span style="font-size: 1.4rem;">⚠️</span>
+        <div>
+          <strong>Anti-Cheat Xavfsizlik Qoidasi:</strong> Test davomida boshqa oynaga, yangi tabga o'tish yoki saytdan chiqish taqiqlanadi! Agar boshqa ilovaga o'tsangiz, test avtomatik ravishda to'xtatiladi.
+        </div>
+      </div>
+
+      <!-- Part 1: 30 Multiple Choice Questions -->
+      <div class="exam-part-header">
+        <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">1-Qism: 30 ta Grammatika va Lug'at Testi (MCQ)</h4>
+        <span id="exam-answered-counter" class="badge badge-cyan">0 / 30 belgilandi</span>
+      </div>
+      <div id="placement-questions-list" style="margin-bottom: 24px;"></div>
+
+      <!-- Part 2: Writing Essay Task -->
+      <div class="exam-part-header" style="border-left-color: var(--accent-cyan);">
+        <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">2-Qism: Writing Vazifasi (Insho yozish)</h4>
+        <span class="badge badge-emerald">Admin Baholaydi</span>
+      </div>
+      <div style="background: #110f22; border-radius: 16px; padding: 18px; margin-bottom: 24px; border: 1px solid var(--border-subtle);">
+        <p id="exam-writing-prompt" style="color: #c5c1e5; font-size: 0.95rem; line-height: 1.6; margin-bottom: 12px; font-weight: 500;"></p>
+        <textarea id="exam-writing-input" class="form-input" rows="5" placeholder="Inshongizni ingliz tilida shu yerga yozing..." style="font-size: 0.95rem;"></textarea>
+      </div>
+
+      <!-- Part 3: Speaking Interview Task with Real Recording -->
+      <div class="exam-part-header" style="border-left-color: #f43f5e;">
+        <h4 style="color: #fff; font-size: 1.1rem; margin: 0;">3-Qism: Speaking Suhbat Vazifasi (Ovoz Yozish)</h4>
+        <span class="badge badge-purple">Mikrofon Yozuvi</span>
+      </div>
+      <div style="background: #110f22; border-radius: 16px; padding: 18px; margin-bottom: 24px; border: 1px solid var(--border-subtle);">
+        <div id="exam-speaking-questions" style="margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px;"></div>
+        
+        <!-- Exam Voice Recorder Box -->
+        <div id="exam-voice-recorder-box" style="text-align: center; padding: 16px; background: #16132c; border-radius: 16px; border: 1px solid var(--border-subtle);">
+          <div id="exam-record-idle">
+            <p style="color: #c5c1e5; font-size: 0.9rem; margin-bottom: 12px;">Savollarga javob berish uchun mikrofon tugmasini bosing:</p>
+            <button type="button" class="record-action-btn" style="width: 60px; height: 60px; font-size: 1.5rem;" onclick="App.startExamVoiceRecording()">🎙</button>
+          </div>
+          <div id="exam-record-active" style="display: none;">
+            <p style="color: #fb7185; font-weight: 700; margin-bottom: 10px;">OVOZ YOZILMOQDA... Gapirib bo'lgach to'xtating:</p>
+            <button type="button" class="record-action-btn recording" style="width: 60px; height: 60px; font-size: 1.5rem;" onclick="App.stopExamVoiceRecording()">⏹</button>
+          </div>
+          <div id="exam-record-done" style="display: none;">
+            <p style="color: #34d399; font-weight: 600; margin-bottom: 8px;">✓ Ovoz yozib olindi! Tinglab ko'ring:</p>
+            <audio id="exam-audio-preview" controls style="width: 100%; max-width: 380px; margin-bottom: 10px;"></audio>
+            <div>
+              <button type="button" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem; color: #fb7185;" onclick="App.resetExamVoiceRecording()">❌ Qayta yozish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+        <button class="btn-secondary" style="padding: 14px 24px;" onclick="App.closePlacementExamModal()">Bekor qilish</button>
+        <button class="btn-primary" style="padding: 14px 36px; font-weight: 800; font-size: 1.05rem;" onclick="App.submitPlacementExam()">
+          Imtihonni Yakunlash va Adminga Yuborish ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UNLOCK TEST PROMPT ("Ready" modal) -->
+  <div id="unlock-prompt-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 500px; text-align: center;">
+      <div style="font-size: 3.5rem; margin-bottom: 14px;">🔒</div>
+      <h3 id="unlock-modal-title" style="font-size: 1.5rem; color: #fff; font-weight: 800; margin-bottom: 12px;">Darsni Ochish uchun Sinov</h3>
+      <p id="unlock-modal-desc" style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+        Ushbu darsni ochish uchun o'tilgan mavzular bo'yicha testdan kamida 70% to'plashingiz kerak. Testga tayyormisiz?
+      </p>
+
+      <div style="display: flex; gap: 14px; justify-content: center;">
+        <button class="btn-secondary" style="padding: 14px 24px;" onclick="App.closeUnlockPromptModal()">
+          Keyinroq
+        </button>
+        <button class="btn-primary" style="padding: 14px 32px; font-weight: 700;" onclick="App.startUnlockQuiz()">
+          Ready (Tayyorman) ▶
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UNLOCK QUIZ MODAL -->
+  <div id="unlock-quiz-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 720px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h3 style="font-size: 1.4rem; color: #fff; font-weight: 800;">🔑 Dars Qulfini Ochish Testi</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Kamida 70% to'g'ri topsangiz dars avtomatik va doimiy ochiladi!</p>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="document.getElementById('unlock-quiz-modal').style.display='none'">✕</button>
+      </div>
+
+      <div id="unlock-quiz-questions-list" style="max-height: 60vh; overflow-y: auto; padding-right: 6px;"></div>
+
+      <div style="margin-top: 24px; text-align: right;">
+        <button class="btn-primary" style="padding: 14px 32px;" onclick="App.submitUnlockQuiz()">
+          Tekshirish va Darsni Ochish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADMIN LOGIN (Passcode: @Abdukarim010) -->
+  <div id="admin-login-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 440px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 2.8rem; margin-bottom: 10px;">🔐</div>
+        <h3 style="font-size: 1.4rem; color: #fff; font-weight: 700;">Admin Boshqaruviga Kirish</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Maxfiy admin kodini kiriting</p>
+      </div>
+
+      <form onsubmit="App.handleAdminLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Admin Maxfiy Kodi:</label>
+          <input type="password" id="admin-code-input" class="form-input" placeholder="Kodni kiriting..." required autofocus>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+          <button type="button" class="btn-secondary" style="flex: 1;" onclick="App.closeAdminLoginModal()">Bekor qilish</button>
+          <button type="submit" class="btn-primary" style="flex: 1;">Kirish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: STUDENT DETAIL INSPECTOR (Admin) -->
+  <div id="student-detail-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 960px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <span class="badge badge-purple">O'QUVCHI MONITORINGI VA TEKSHIRUVI</span>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeStudentDetail()">✕</button>
+      </div>
+      <div id="student-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD LESSON WIZARD (Admin) -->
+  <div id="add-lesson-wizard-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 880px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom: 4px;">DARS QO'SHISH USTASI (WIZARD)</span>
+          <h2 style="font-size: 1.5rem; color: #fff; font-weight: 800;">Yangi Dars Materiallarini Shakllantirish</h2>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeAddLessonWizard()">✕</button>
+      </div>
+
+      <!-- Stepper Header -->
+      <div id="wizard-stepper-container" class="wizard-stepper"></div>
+
+      <!-- Step Body -->
+      <div id="wizard-step-body" style="background: #15132a; border-radius: 20px; padding: 24px; border: 1px solid var(--border-subtle); margin-bottom: 20px;"></div>
+
+      <!-- Stepper Footer Nav Buttons -->
+      <div id="wizard-nav-footer"></div>
+    </div>
+  </div>
+</div>
+  <!-- MODAL: HEADWAY 4TH EDITION BOOKS DOWNLOAD -->
+  <div id="books-download-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 580px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h3 id="books-modal-level-title" style="font-size: 1.4rem; color: #fff; font-weight: 800;">Headway 4th Edition Kitoblari</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Oxford University Press rasmiy darsliklari</p>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="document.getElementById('books-download-modal').style.display='none'">✕</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 10px;">
+        <!-- Student's Book -->
+        <div class="custom-pill-btn" style="padding: 16px 20px; justify-content: space-between; align-items: center;">
+          <div>
+            <div id="book-sb-title" style="color: #fff; font-weight: 700;">Student's Book (Oxford PDF)</div>
+            <div id="book-sb-size" style="color: var(--accent-purple-light); font-size: 0.85rem;">40.5 MB • To'liq darslik</div>
+          </div>
+          <a id="book-download-sb" href="assets/books/Headway_Beginner_Students_Book_4th.pdf" target="_blank" download class="btn-primary" style="padding: 10px 18px; font-size: 0.9rem; text-decoration: none;">
+            📥 Yuklab Olish
+          </a>
+        </div>
+
+        <!-- Workbook -->
+        <div class="custom-pill-btn" style="padding: 16px 20px; justify-content: space-between; align-items: center;">
+          <div>
+            <div id="book-wb-title" style="color: #fff; font-weight: 700;">Workbook with Key (Oxford PDF)</div>
+            <div id="book-wb-size" style="color: var(--accent-cyan); font-size: 0.85rem;">23.7 MB • Mashqlar kitobi</div>
+          </div>
+          <a id="book-download-wb" href="assets/books/Headway_Beginner_Workbook_4th.pdf" target="_blank" download class="btn-secondary" style="padding: 10px 18px; font-size: 0.9rem; text-decoration: none; border-color: var(--border-neon);">
+            📥 Yuklab Olish
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RECEIPT FULL IMAGE PREVIEW (Admin) -->
+  <div id="receipt-preview-modal" class="modal-overlay" style="display: none;" onclick="AdminController.closeReceiptPreview()">
+    <div class="modal-content" style="max-width: 600px; text-align: center; background: #0c0a1a;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h4 style="font-size: 1.1rem; color: #fff; font-weight: 700;">To'lov Cheki Rasmi</h4>
+        <button class="btn-secondary" style="padding: 4px 10px;" onclick="AdminController.closeReceiptPreview()">✕</button>
+      </div>
+      <img id="receipt-preview-img" src="" alt="Chek" style="width: 100%; max-height: 75vh; object-fit: contain; border-radius: 12px; border: 1px solid var(--border-subtle);" />
+    </div>
+  </div>
+
+  <!-- MODAL: ADD EXAM VARIANT (Admin) -->
+  <div id="add-exam-variant-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <span class="badge badge-purple" style="margin-bottom: 4px;">IMTIHON TESTI BOSHQARUVI</span>
+          <h3 style="font-size: 1.4rem; color: #fff; font-weight: 800;">Yangi Test Varianti Qo'shish</h3>
+        </div>
+        <button class="btn-secondary" style="padding: 6px 12px;" onclick="AdminController.closeAddExamVariantModal()">✕</button>
+      </div>
+      <div id="exam-variant-form-body"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="data/curriculum.js"></script>
+  <script src="data/placement-test.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/tracker.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- PWA & Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          console.log('Edu-Step PWA ServiceWorker faol:', reg.scope);
+        }).catch(err => {
+          console.log('ServiceWorker xatosi:', err);
+        });
+      });
+    }
+
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('install-app-btn');
+      if (installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    if (typeof App !== 'undefined') {
+      App.installPWA = function() {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              alert("Edu-Step ilovasi muvaffaqiyatli o'rnatilmoqda!");
+            }
+            deferredPrompt = null;
+          });
+        } else {
+          alert("📱 EDU-STEP ILOVASINI O'RNATISH QO'LLANMASI:\n\n1. Android (Google Chrome):\nBrauzerning yuqori o'ng burchagidagi 3 nuqtani bosing va 'Ilovani o'rnatish' (Install App) tugmasini tanlang. Telefoningizga alohida ilova sifatida o'rnatiladi!\n\n2. iPhone / iPad (Safari):\nPastdagi 'Ulashish' (Share / kvadrat ustida strelka) belgisini bosing va 'Bosh ekranga qo'shish' (Add to Home Screen) ni tanlang. To'liq ekranli ilovaga aylanadi!\n\n3. Windows Kompyuter (Chrome / Edge):\nBrauzer tepasidagi manzil qatorida 'Ilovani o'rnatish' tugmasi chiqadi, uni bossangiz ish stolingizga mustaqil dastur bo'lib tushadi!");
+        }
+      };
+    }
+  </script>
+</body>
+</html>
